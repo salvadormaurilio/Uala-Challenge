@@ -1,4 +1,4 @@
-package com.example.ualachallenge
+package com.example.ualachallenge.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
