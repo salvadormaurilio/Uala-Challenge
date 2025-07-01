@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class CountriesRepositoryImpl(
+class CountriesRepositoryImpl @Inject constructor(
     private val countriesRemoteDataSource: CountriesRemoteDataSource,
     private val countriesLocalDataSource: CountriesLocalDataSource
 ) : CountriesRepository {

@@ -5,8 +5,9 @@ import com.example.ualachallenge.data.datasource.remote.retrofit.CountriesServic
 import com.example.ualachallenge.data.datasource.remote.retrofit.CountryResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class CountriesRemoteDataSourceImpl(
+class CountriesRemoteDataSourceImpl @Inject constructor(
     private val countriesServiceRetrofit: CountriesServiceRetrofit
 ) : CountriesRemoteDataSource {
 

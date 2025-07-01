@@ -4,8 +4,9 @@ import com.example.ualachallenge.data.datasource.exception.DataException
 import com.example.ualachallenge.data.datasource.local.room.CountriesDao
 import com.example.ualachallenge.data.datasource.local.room.CountryEntity
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class CountriesLocalDataSourceImpl(private val countriesDao: CountriesDao) : CountriesLocalDataSource {
+class CountriesLocalDataSourceImpl @Inject constructor(private val countriesDao: CountriesDao) : CountriesLocalDataSource {
 
     override suspend fun insertCountries(countries: List<CountryEntity>) = countriesDao.insertAll(countries)
 
