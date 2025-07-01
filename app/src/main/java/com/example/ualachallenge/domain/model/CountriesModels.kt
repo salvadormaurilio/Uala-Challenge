@@ -24,3 +24,7 @@ private fun Country.toCountryEntity() = CountryEntity(
 fun Result<List<Country>>.isValidCountries() = isSuccess && !getOrNull().isNullOrEmpty()
 
 fun Result<List<Country>>.getCountries() = getOrNull().orEmpty()
+
+fun Result<List<Country>>.filterCountries(query: String) = map { it.filterCountries(query) }
+
+fun List<Country>.filterCountries(query: String) = filter { it.name.startsWith(query, ignoreCase = true) }
