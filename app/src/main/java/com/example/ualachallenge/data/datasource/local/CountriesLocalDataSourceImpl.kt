@@ -19,4 +19,7 @@ class CountriesLocalDataSourceImpl @Inject constructor(private val countriesDao:
             emit(Result.failure(DataException.CountriesException()))
         }
     }
+
+    override suspend fun updateFavorite(id: Int, isFavorite: Boolean) = countriesDao.updateFavorite(id, isFavorite)
 }
+

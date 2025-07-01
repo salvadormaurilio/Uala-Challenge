@@ -8,4 +8,6 @@ interface CountriesLocalDataSource {
     suspend fun insertCountries(countries: List<CountryEntity>)
 
     fun getCountries(): Flow<Result<List<CountryEntity>>>
+
+    suspend fun updateFavorite(id: Int, isFavorite: Boolean)
 }

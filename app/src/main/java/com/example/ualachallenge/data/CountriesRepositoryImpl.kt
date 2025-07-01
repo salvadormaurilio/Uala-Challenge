@@ -8,6 +8,7 @@ import com.example.ualachallenge.domain.model.Country
 import com.example.ualachallenge.domain.model.getCountries
 import com.example.ualachallenge.domain.model.isValidCountries
 import com.example.ualachallenge.domain.model.toCountriesEntity
+import com.example.ualachallenge.domain.model.updateFavorite
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -45,5 +46,10 @@ class CountriesRepositoryImpl @Inject constructor(
                 countriesLocalDataSource.insertCountries(countries.toCountriesEntity())
             }
         }
+
+    override suspend fun updateFavorite(id: Int, isFavorite: Boolean) {
+        countries.updateFavorite(id, isFavorite)
+        return countriesLocalDataSource.updateFavorite(id, isFavorite)
+    }
 }
 

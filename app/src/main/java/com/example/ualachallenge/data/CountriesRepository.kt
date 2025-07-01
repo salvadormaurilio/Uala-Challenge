@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface CountriesRepository {
 
     fun getCountries(): Flow<Result<List<Country>>>
+
+    suspend fun updateFavorite(id: Int, isFavorite: Boolean)
 }

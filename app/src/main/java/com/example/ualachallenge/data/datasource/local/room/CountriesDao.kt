@@ -25,4 +25,7 @@ interface CountriesDao {
     @VisibleForTesting
     @Query("DELETE FROM $TABLE_COUNTRY")
     suspend fun delete(): Int
+
+    @Query("UPDATE $TABLE_COUNTRY SET $IS_FAVORITE = :isFavorite WHERE $ID = :id")
+    suspend fun updateFavorite(id: Int, isFavorite: Boolean)
 }
