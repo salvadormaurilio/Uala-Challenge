@@ -14,6 +14,8 @@ import com.example.ualachallenge.data.datasource.remote.CountriesRemoteDataSourc
 import com.example.ualachallenge.data.datasource.remote.retrofit.CountriesServiceRetrofit
 import com.example.ualachallenge.domain.GetCountriesUseCase
 import com.example.ualachallenge.domain.GetCountriesUseCaseImpl
+import com.example.ualachallenge.domain.UpdateFavoriteUseCase
+import com.example.ualachallenge.domain.UpdateFavoriteUseCaseImpl
 import com.google.gson.GsonBuilder
 import dagger.Binds
 import dagger.Module
@@ -50,6 +52,11 @@ abstract class AppModule {
     abstract fun bindGetCountriesUseCase(
         impl: GetCountriesUseCaseImpl
     ): GetCountriesUseCase
+
+    @Binds
+    abstract fun bindUpdateFavoriteUseCase(
+        impl: UpdateFavoriteUseCaseImpl
+    ): UpdateFavoriteUseCase
 
     companion object {
         @Provides

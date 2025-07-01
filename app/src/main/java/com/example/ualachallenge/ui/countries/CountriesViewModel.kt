@@ -43,7 +43,7 @@ class CountriesViewModel @Inject constructor(
         getCountries()
     }
 
-    fun searchMovies(query: String) {
+    fun searchCountries(query: String) {
         if (this.query == query) return
         this.query = query
         getCountries()
@@ -58,7 +58,7 @@ class CountriesViewModel @Inject constructor(
         jobGetCountries?.cancel()
         jobGetCountries = viewModelScope.launch(coroutinesDispatchers.io) {
             updateCountriesUiState(isLoading = true)
-            getCountriesUseCase(query).collect {
+            getCountriesUseCase(query.trim()).collect {
                 getCountriesSuccess(it)
                 getCountriesError(it)
             }
