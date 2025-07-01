@@ -7,6 +7,7 @@ import com.example.ualachallenge.data.datasource.local.CountriesLocalDataSource
 import com.example.ualachallenge.data.datasource.local.room.CountryEntity
 import com.example.ualachallenge.data.datasource.remote.CountriesRemoteDataSource
 import com.example.ualachallenge.data.datasource.remote.retrofit.CountryResponse
+import com.example.ualachallenge.fakedata.ANY_ID
 import com.example.ualachallenge.fakedata.givenCountriesEntityFakeData
 import com.example.ualachallenge.fakedata.givenCountriesFakeData
 import com.example.ualachallenge.fakedata.givenCountriesResponseFakeData
@@ -122,4 +123,11 @@ class CountriesRepositoryShould {
             verify(countriesLocalDataSource, never()).insertCountries(any())
             assertThatEquals(result?.getOrNull(), countries)
         }
+
+    @Test
+    fun `Call updateFavorite when updateFavorite is called`() = runTest {
+        countriesRepository.updateFavorite(id = ANY_ID, isFavorite = true)
+
+        verify(countriesLocalDataSource).updateFavorite(id = ANY_ID, isFavorite = true)
+    }
 }

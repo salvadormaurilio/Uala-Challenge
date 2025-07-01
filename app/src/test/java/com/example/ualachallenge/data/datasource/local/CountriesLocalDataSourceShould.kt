@@ -4,6 +4,7 @@ import com.example.ualachallenge.core.assertThatEquals
 import com.example.ualachallenge.core.assertThatIsInstanceOf
 import com.example.ualachallenge.data.datasource.exception.DataException
 import com.example.ualachallenge.data.datasource.local.room.CountriesDao
+import com.example.ualachallenge.fakedata.ANY_ID
 import com.example.ualachallenge.fakedata.givenCountriesEntityFakeData
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.test.runTest
@@ -51,5 +52,12 @@ class CountriesLocalDataSourceShould {
 
         verify(userDao).getAll()
         assertThatIsInstanceOf<DataException.CountriesException>(result?.exceptionOrNull())
+    }
+
+    @Test
+    fun `Call updateFavorite when updateFavorite is called`() = runTest {
+        countriesLocalDataSource.updateFavorite(id = ANY_ID, isFavorite = true)
+
+        verify(userDao).updateFavorite(id = ANY_ID, isFavorite = true)
     }
 }

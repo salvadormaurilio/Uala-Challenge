@@ -4,7 +4,9 @@ import com.example.ualachallenge.core.RoomRule
 import com.example.ualachallenge.core.assertThatEquals
 import com.example.ualachallenge.data.datasource.local.room.CountriesDao
 import com.example.ualachallenge.data.datasource.local.room.CountriesRoomDatabase
+import com.example.ualachallenge.fakedata.ANY_ID
 import com.example.ualachallenge.fakedata.givenCountriesEntityFakeData
+import com.example.ualachallenge.fakedata.givenCountryEntityUpdatedFakeData
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -26,7 +28,7 @@ class CountriesDaoShould {
     fun insertCountriesEntityInDatabase() = runTest {
         val countriesEntity = givenCountriesEntityFakeData()
 
-        countriesDao.insert(countriesEntity)
+        countriesDao.insertAll(countriesEntity)
         val countriesEntityResult = countriesDao.getAll()
 
         assertThatEquals(countriesEntityResult, countriesEntity)
@@ -36,10 +38,22 @@ class CountriesDaoShould {
     fun replaceCountriesEntityInDatabaseWhenInsertIsCalledMultipleTimes() = runTest {
         val countriesEntity = givenCountriesEntityFakeData()
 
-        countriesDao.insert(countriesEntity)
-        countriesDao.insert(countriesEntity)
+        countriesDao.insertAll(countriesEntity)
+        countriesDao.insertAll(countriesEntity)
         val countriesEntityResult = countriesDao.getAll()
 
         assertThatEquals(countriesEntityResult, countriesEntity)
+    }
+
+    @Test
+    fun updateEntityInDatabaseWhenUpdateFavoriteIsCalled() = runTest {
+        val countriesEntity = givenCountriesEntityFakeData()
+        val countriesEntityUpdated = givenCountryEntityUpdatedFakeData()
+
+        countriesDao.insertAll(countriesEntity)
+        countriesDao.updateFavorite(id = ANY_ID, isFavorite = true)
+        val countriesEntityResult = countriesDao.getAll().find { it.id == ANY_ID }
+
+        assertThatEquals(countriesEntityResult, countriesEntityUpdated)
     }
 }
