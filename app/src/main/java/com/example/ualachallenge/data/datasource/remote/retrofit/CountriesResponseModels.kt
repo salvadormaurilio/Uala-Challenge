@@ -1,5 +1,7 @@
 package com.example.ualachallenge.data.datasource.remote.retrofit
 
+import com.example.ualachallenge.core.extensions.orDefault
+import com.example.ualachallenge.domain.model.Country
 import com.google.gson.annotations.SerializedName
 
 data class CountryResponse(
@@ -19,4 +21,18 @@ data class CountryCoordinatesResponse(
     val longitude: Double?,
     @SerializedName("lat")
     val latitude: Double?,
+)
+
+fun Result<List<CountryResponse>>.toCountries() = map { it.sortedByName().toCountries() }
+
+private fun List<CountryResponse>.sortedByName() = sortedBy { it.name }
+
+private fun List<CountryResponse>.toCountries() = map { it.toCountry() }
+
+private fun CountryResponse.toCountry() = Country(
+    id = id.orDefault(),
+    name = name.orEmpty(),
+    country = country.orEmpty(),
+    latitude = coordinates?.latitude.orDefault(),
+    longitude = coordinates?.longitude.orDefault()
 )
