@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ualachallenge.core.coroutines.CoroutinesDispatchers
 import com.example.ualachallenge.core.extensions.empty
 import com.example.ualachallenge.domain.GetCountriesUseCase
+import com.example.ualachallenge.domain.UpdateFavoriteUseCase
 import com.example.ualachallenge.domain.model.Country
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CountriesViewModel @Inject constructor(
     private val getCountriesUseCase: GetCountriesUseCase,
+    private val updateFavoriteUseCase: UpdateFavoriteUseCase,
     private val coroutinesDispatchers: CoroutinesDispatchers
 ) : ViewModel() {
 
@@ -83,6 +85,12 @@ class CountriesViewModel @Inject constructor(
                 countries = countries,
                 error = error
             )
+        }
+    }
+
+    fun updateFavorite(id: Int, isFavorite: Boolean) {
+        viewModelScope.launch(coroutinesDispatchers.io) {
+            updateFavoriteUseCase(id, isFavorite)
         }
     }
 }
