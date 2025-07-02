@@ -2,10 +2,16 @@ package com.example.ualachallenge.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val BluePrimary = Color(0xFF42A5F5)
+val BlueSecondary = Color(0xFF42A5F5)
+val LightBackground = Color(0xFFF5F5F5)
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E1E)
+val LightSurface = Color(0xFFFFFFFF)
+val DarkOnSurface = Color(0xCCFFFFFF)
+val LightOnSurface = Color(0xCC1E1E1E)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val LightPrimaryText = Color(0xFF333333)
+val DarkPrimaryText = Color(0xFFF8F8F8)
+val LightSecondaryText = Color(0xFF666666)
+val DarkSecondaryText = Color(0xFFF8F8F8)
