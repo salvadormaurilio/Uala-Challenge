@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Uala Challenge</string>
+    <string name="app_name">Countries Challenge</string>
+    <string name="country_age">Almost %d years</string>
+    <string name="something_went_wrong">Oops! Something went wrong</string>
+    <string name="countries_load_error">We couldn\'t load the countries.\nPlease check your connection and try again.</string>
+    <string name="default_error">Please check your connection and try again.</string>
+    <string name="retry">Retry</string>
 </resources>
