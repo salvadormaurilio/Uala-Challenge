@@ -17,7 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +28,7 @@ import com.example.ualachallenge.ui.theme.CountriesChallengeTheme
 @Composable
 fun CountryItem(
     country: Country,
+    onShorCoordinates: (Country) -> Unit = {},
     onShowDetails: (Country) -> Unit = {},
     onFavorite: (Int, Boolean) -> Unit = { _, _ -> }
 ) {
@@ -36,23 +36,24 @@ fun CountryItem(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        onClick = { onShorCoordinates(country) }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 12.dp),
+                    .padding(12.dp),
             ) {
                 Text(
                     text = stringResource(R.string.country_name, country.name, country.country),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.coordinates, country.latitude.toString(), country.longitude.toString()),
                     style = MaterialTheme.typography.bodyLarge,
@@ -60,7 +61,7 @@ fun CountryItem(
                 )
             }
 
-            Column {
+            Column(modifier = Modifier.padding(4.dp)) {
                 IconButton(onClick = { onFavorite(country.id, !country.isFavorite) }) {
                     Icon(
                         imageVector = if (country.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,

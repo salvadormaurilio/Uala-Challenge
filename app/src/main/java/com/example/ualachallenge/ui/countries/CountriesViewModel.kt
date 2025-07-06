@@ -1,5 +1,6 @@
 package com.example.ualachallenge.ui.countries
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,6 +30,8 @@ class CountriesViewModel @Inject constructor(
         private set
     var query by mutableStateOf(String.empty())
         private set
+    val listState = LazyListState()
+
     private var jobGetCountries: Job? = null
 
     private val _countriesUiState = MutableStateFlow(CountriesUiState())
@@ -66,6 +69,7 @@ class CountriesViewModel @Inject constructor(
     }
 
     private fun getCountriesSuccess(result: Result<List<Country>>) = result.onSuccess {
+        viewModelScope.launch { listState.scrollToItem(0) }
         updateCountriesUiState(countries = it)
     }
 

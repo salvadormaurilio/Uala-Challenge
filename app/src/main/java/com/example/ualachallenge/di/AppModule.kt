@@ -67,7 +67,7 @@ abstract class AppModule {
         @Singleton
         fun provideOkHttpClient(): OkHttpClient =
             OkHttpClient.Builder()
-                .addInterceptor(HttpLoggingInterceptor())
+                .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
                 .build()
 
         @Provides
