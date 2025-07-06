@@ -11,6 +11,7 @@ import com.example.ualachallenge.fakedata.ANY_ID
 import com.example.ualachallenge.fakedata.givenCountriesEntityFakeData
 import com.example.ualachallenge.fakedata.givenCountriesFakeData
 import com.example.ualachallenge.fakedata.givenCountriesResponseFakeData
+import com.example.ualachallenge.fakedata.givenUCountriesUpdatedFavoritesFakeData
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.test.runTest
@@ -114,7 +115,6 @@ class CountriesRepositoryShould {
             val resultCountriesEntitySuccess = Result.success(countriesEntity)
             whenever(countriesLocalDataSource.getCountries()).thenReturn(flowOf(resultCountriesEntitySuccess))
 
-
             countriesRepository.getCountries().lastOrNull()
             val result = countriesRepository.getCountries().lastOrNull()
 
@@ -125,9 +125,18 @@ class CountriesRepositoryShould {
         }
 
     @Test
-    fun `Call updateFavorite when updateFavorite is called`() = runTest {
+    fun `Call updateFavorite and update Countries when updateFavorite is called`() = runTest {
+        val countriesEntity = givenCountriesEntityFakeData()
+        val countries = givenUCountriesUpdatedFavoritesFakeData()
+        val resultCountriesEntitySuccess = Result.success(countriesEntity)
+        whenever(countriesLocalDataSource.getCountries()).thenReturn(flowOf(resultCountriesEntitySuccess))
+
+        countriesRepository.getCountries().lastOrNull()
         countriesRepository.updateFavorite(id = ANY_ID, isFavorite = true)
+        val result = countriesRepository.getCountries().lastOrNull()
 
         verify(countriesLocalDataSource).updateFavorite(id = ANY_ID, isFavorite = true)
+        assertThatEquals(result?.getOrNull(), countries)
+
     }
 }

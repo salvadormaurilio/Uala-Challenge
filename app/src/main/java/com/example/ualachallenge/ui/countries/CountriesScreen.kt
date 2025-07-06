@@ -62,6 +62,7 @@ fun CountriesScreen(viewModel: CountriesViewModel = hiltViewModel()) {
         error = uiState.value.error,
         onActiveSearch = viewModel::activeSearch,
         onSearch = viewModel::searchCountries,
+        onFavorite = viewModel::updateFavorite,
         onRetry = viewModel::retryGetCountries,
     )
 }
@@ -110,9 +111,7 @@ private fun CountriesContent(
                 modifier = Modifier.padding(paddingValues),
                 isVisible = isLoading
             )
-
         }
-
     )
 }
 

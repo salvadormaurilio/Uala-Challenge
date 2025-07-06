@@ -7,7 +7,7 @@ import com.example.ualachallenge.data.datasource.exception.DataException
 import com.example.ualachallenge.domain.model.Country
 import com.example.ualachallenge.fakedata.ANY_QUERY
 import com.example.ualachallenge.fakedata.givenCountriesFakeData
-import com.example.ualachallenge.fakedata.givenFilterCountriesFakeData
+import com.example.ualachallenge.fakedata.givenCountriesFilteredByQueryFakeData
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.test.runTest
@@ -41,7 +41,7 @@ class GetCountriesUseCaseShould {
 
     @Test
     fun `Get CountriesException data when query has some value is success`() = runTest {
-        val countries = givenFilterCountriesFakeData()
+        val countries = givenCountriesFilteredByQueryFakeData()
         val resultSuccess = Result.success(countries)
         whenever(countriesRepository.getCountries()).thenReturn(flowOf(resultSuccess))
 

@@ -9,6 +9,7 @@ import com.example.ualachallenge.domain.UpdateFavoriteUseCase
 import com.example.ualachallenge.fakedata.ANY_ID
 import com.example.ualachallenge.fakedata.ANY_QUERY
 import com.example.ualachallenge.fakedata.givenCountriesFakeData
+import com.example.ualachallenge.fakedata.givenUCountriesUpdatedFavoritesFakeData
 import com.example.ualachallenge.ui.countries.CountriesViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
@@ -109,9 +110,17 @@ class CountriesViewModelShould {
     }
 
     @Test
-    fun `Call updateFavorite when updateFavorite is called`() = runTest {
+    fun `Call updateFavorite and update Countries when updateFavorite is called`() = runTest {
+        val countries = givenCountriesFakeData()
+        val countriesUpdatedFavorites = givenUCountriesUpdatedFavoritesFakeData()
+        whenever(getCountriesUseCase()).thenReturn(flowOf(Result.success(countries)))
+
+        countriesViewModel.initGetCountries()
         countriesViewModel.updateFavorite(id = ANY_ID, isFavorite = true)
 
+        val result = countriesViewModel.countriesUiState.firstOrNull()
+
         verify(updateFavoriteUseCase)(id = ANY_ID, isFavorite = true)
+        assertThatEquals(result?.countries, countriesUpdatedFavorites)
     }
 }

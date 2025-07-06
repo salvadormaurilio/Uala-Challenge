@@ -21,7 +21,7 @@ class CountriesRepositoryImpl @Inject constructor(
     private val countriesLocalDataSource: CountriesLocalDataSource
 ) : CountriesRepository {
 
-    internal var countries = emptyList<Country>()
+    private var countries = emptyList<Country>()
 
     override fun getCountries() = if (countries.isEmpty()) getOrFetchCountries() else flowOf(Result.success(countries))
 
@@ -48,8 +48,8 @@ class CountriesRepositoryImpl @Inject constructor(
         }
 
     override suspend fun updateFavorite(id: Int, isFavorite: Boolean) {
-        countries.updateFavorite(id, isFavorite)
-        return countriesLocalDataSource.updateFavorite(id, isFavorite)
+        countries = countries.updateFavorite(id, isFavorite)
+        countriesLocalDataSource.updateFavorite(id, isFavorite)
     }
 }
 

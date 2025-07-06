@@ -8,7 +8,7 @@ data class Country(
     val country: String,
     val longitude: Double,
     val latitude: Double,
-    var isFavorite: Boolean = false,
+    val isFavorite: Boolean = false,
 )
 
 fun List<Country>.toCountriesEntity() = map { it.toCountryEntity() }
@@ -29,6 +29,4 @@ fun Result<List<Country>>.filterCountries(query: String) = map { it.filterCountr
 
 fun List<Country>.filterCountries(query: String) = filter { it.name.startsWith(query, ignoreCase = true) }
 
-fun List<Country>.updateFavorite(id: Int, isFavorite: Boolean) {
-    find { it.id == id }?.isFavorite = isFavorite
-}
+fun List<Country>.updateFavorite(id: Int, isFavorite: Boolean) = map { if (it.id == id) it.copy(isFavorite = isFavorite) else it }

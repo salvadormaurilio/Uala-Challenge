@@ -39,11 +39,13 @@ abstract class AppModule {
     ): CountriesRemoteDataSource
 
     @Binds
+    @Singleton
     abstract fun bindCountriesLocalDataSource(
         impl: CountriesLocalDataSourceImpl
     ): CountriesLocalDataSource
 
     @Binds
+    @Singleton
     abstract fun bindCountriesRepository(
         impl: CountriesRepositoryImpl
     ): CountriesRepository

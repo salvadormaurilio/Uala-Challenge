@@ -11,6 +11,7 @@ import com.example.ualachallenge.core.extensions.empty
 import com.example.ualachallenge.domain.GetCountriesUseCase
 import com.example.ualachallenge.domain.UpdateFavoriteUseCase
 import com.example.ualachallenge.domain.model.Country
+import com.example.ualachallenge.domain.model.updateFavorite
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,8 @@ class CountriesViewModel @Inject constructor(
     var isActiveSearch by mutableStateOf(false)
         private set
     var query by mutableStateOf(String.empty())
+        private set
+    var filterFavorites by mutableStateOf(false)
         private set
     val listState = LazyListState()
 
@@ -78,6 +81,15 @@ class CountriesViewModel @Inject constructor(
         it.printStackTrace()
     }
 
+    fun updateFavorite(id: Int, isFavorite: Boolean) {
+        viewModelScope.launch(coroutinesDispatchers.io) {
+            updateFavoriteUseCase(id, isFavorite)
+            val newCountries = countriesUiState.value.countries?.updateFavorite(id, isFavorite)
+            updateCountriesUiState(countries = newCountries)
+
+        }
+    }
+
     private fun updateCountriesUiState(
         isLoading: Boolean = false,
         countries: List<Country>? = countriesUiState.value.countries,
@@ -89,12 +101,6 @@ class CountriesViewModel @Inject constructor(
                 countries = countries,
                 error = error
             )
-        }
-    }
-
-    fun updateFavorite(id: Int, isFavorite: Boolean) {
-        viewModelScope.launch(coroutinesDispatchers.io) {
-            updateFavoriteUseCase(id, isFavorite)
         }
     }
 }

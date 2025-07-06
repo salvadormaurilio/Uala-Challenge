@@ -87,13 +87,38 @@ fun givenCountriesFakeData() = listOf(
     )
 )
 
-fun givenFilterCountriesFakeData() = listOf(
+fun givenCountriesFilteredByQueryFakeData() = listOf(
     Country(
         id = 519188,
         name = "Novinki",
         country = "RU",
         longitude = 37.666668,
         latitude = 55.683334
+    )
+)
+
+fun givenUCountriesUpdatedFavoritesFakeData() = listOf(
+    Country(
+        id = 1283378,
+        name = "Gorkhā",
+        country = "NP",
+        longitude = 84.633331,
+        latitude = 28.0
+    ),
+    Country(
+        id = 707860,
+        name = "Hurzuf",
+        country = "UA",
+        longitude = 34.283333,
+        latitude = 44.549999
+    ),
+    Country(
+        id = 519188,
+        name = "Novinki",
+        country = "RU",
+        longitude = 37.666668,
+        latitude = 55.683334,
+        isFavorite = true
     )
 )
 
