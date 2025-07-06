@@ -1,6 +1,9 @@
 package com.example.ualachallenge.ui.countries
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -27,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -56,12 +62,14 @@ fun CountriesScreen(viewModel: CountriesViewModel = hiltViewModel()) {
     CountriesContent(
         isActiveSearch = viewModel.isActiveSearch,
         query = viewModel.query,
+        filterFavorites = viewModel.filterFavorites,
         listState = viewModel.listState,
         isLoading = uiState.value.isLoading,
         countries = uiState.value.countries,
         error = uiState.value.error,
         onActiveSearch = viewModel::activeSearch,
         onSearch = viewModel::searchCountries,
+        onFilterFavorites = viewModel::filterFavorites,
         onFavorite = viewModel::updateFavorite,
         onRetry = viewModel::retryGetCountries,
     )
@@ -71,15 +79,17 @@ fun CountriesScreen(viewModel: CountriesViewModel = hiltViewModel()) {
 private fun CountriesContent(
     isActiveSearch: Boolean = false,
     query: String = String.empty(),
+    filterFavorites: Boolean = false,
     listState: LazyListState = LazyListState(),
     isLoading: Boolean = false,
     countries: List<Country>? = null,
     error: Throwable? = null,
     onActiveSearch: (Boolean) -> Unit = {},
     onSearch: (String) -> Unit = {},
+    onFilterFavorites: (Boolean) -> Unit = { _ -> },
+    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
     onShorCoordinates: (Country) -> Unit = {},
     onShowDetails: (Country) -> Unit = {},
-    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
     onRetry: () -> Unit = {},
 ) {
     Scaffold(
@@ -94,11 +104,13 @@ private fun CountriesContent(
         content = { paddingValues ->
             Countries(
                 modifier = Modifier.padding(paddingValues),
+                filterFavorites = filterFavorites,
                 listState = listState,
                 countries = countries,
+                onFilterFavorites = onFilterFavorites,
+                onFavorite = onFavorite,
                 onShorCoordinates = onShorCoordinates,
-                onShowDetails = onShowDetails,
-                onFavorite = onFavorite
+                onShowDetails = onShowDetails
             )
 
             CountriesErrorScreen(
@@ -117,7 +129,7 @@ private fun CountriesContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountriesTopAppBar(
+private fun CountriesTopAppBar(
     isActiveSearch: Boolean,
     query: String,
     onActiveSearch: (Boolean) -> Unit = {},
@@ -126,56 +138,7 @@ fun CountriesTopAppBar(
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
         title = {
-            if (!isActiveSearch) {
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            } else {
-                TextField(
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .fillMaxWidth()
-                        .focusRequester(FocusRequester()),
-                    textStyle = MaterialTheme.typography.titleSmall,
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                    ),
-                    value = query,
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.search),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    leadingIcon = {
-                        IconButton(onClick = {
-                            onActiveSearch(false)
-                            onSearch(String.empty())
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                tint = MaterialTheme.colorScheme.onSurface,
-                                contentDescription = String.empty(),
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = { onSearch(String.empty()) }) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                tint = MaterialTheme.colorScheme.onSurface,
-                                contentDescription = String.empty()
-                            )
-                        }
-                    },
-                    onValueChange = { onSearch(it) },
-                )
-            }
+            SearchTextField(isActiveSearch, query, onActiveSearch, onSearch)
         },
         actions = {
             if (!isActiveSearch) {
@@ -192,28 +155,125 @@ fun CountriesTopAppBar(
 }
 
 @Composable
-fun Countries(
+private fun SearchTextField(
+    isActiveSearch: Boolean,
+    query: String,
+    onActiveSearch: (Boolean) -> Unit,
+    onSearch: (String) -> Unit
+) {
+    if (!isActiveSearch) {
+        Text(
+            text = stringResource(id = R.string.app_name),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    } else {
+        TextField(
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .fillMaxWidth()
+                .focusRequester(FocusRequester()),
+            textStyle = MaterialTheme.typography.titleSmall,
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            colors = TextFieldDefaults.colors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+            ),
+            value = query,
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.search),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            leadingIcon = {
+                IconButton(onClick = {
+                    onActiveSearch(false)
+                    onSearch(String.empty())
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = String.empty(),
+                    )
+                }
+            },
+            trailingIcon = {
+                IconButton(onClick = { onSearch(String.empty()) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = String.empty()
+                    )
+                }
+            },
+            onValueChange = { onSearch(it) },
+        )
+    }
+}
+
+@Composable
+private fun Countries(
     modifier: Modifier = Modifier,
+    filterFavorites: Boolean,
     listState: LazyListState,
     countries: List<Country>?,
+    onFilterFavorites: (Boolean) -> Unit = { _ -> },
+    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
     onShorCoordinates: (Country) -> Unit = {},
-    onShowDetails: (Country) -> Unit = {},
-    onFavorite: (Int, Boolean) -> Unit = { _, _ -> }
+    onShowDetails: (Country) -> Unit = {}
 ) {
     if (countries == null) return
-    LazyColumn(
+    Column(
         modifier = modifier,
-        contentPadding = PaddingValues(vertical = 8.dp),
-        state = listState
     ) {
-        items(items = countries) {
-            CountryItem(
-                country = it,
-                onShorCoordinates = onShorCoordinates,
-                onShowDetails = onShowDetails,
-                onFavorite = onFavorite
-            )
+        FavoriteFilterSwitch(
+            filterFavorites = filterFavorites,
+            onFilterFavorites = onFilterFavorites
+        )
+
+        LazyColumn(
+            contentPadding = PaddingValues(vertical = 8.dp),
+            state = listState
+        ) {
+            items(items = countries) {
+                CountryItem(
+                    country = it,
+                    onShorCoordinates = onShorCoordinates,
+                    onShowDetails = onShowDetails,
+                    onFavorite = onFavorite
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun FavoriteFilterSwitch(
+    filterFavorites: Boolean = false,
+    onFilterFavorites: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(space = 12.dp, alignment = Alignment.End)
+    ) {
+        Text(
+            text = stringResource(R.string.only_favourites),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimary,
+        )
+
+        Switch(
+            checked = filterFavorites,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.background,
+            ),
+            onCheckedChange = { onFilterFavorites(it) },
+        )
     }
 }
 
@@ -232,13 +292,16 @@ fun CountriesContentUiStateLoadingPreview() {
 fun CountriesContentUiStateSuccessPreview() {
     var isActiveSearch by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf(String.empty()) }
+    var filterFavorites by rememberSaveable { mutableStateOf(false) }
     CountriesChallengeTheme {
         CountriesContent(
             isActiveSearch = isActiveSearch,
             query = query,
+            filterFavorites = filterFavorites,
+            countries = getCountriesTestData(),
             onSearch = { query = it },
             onActiveSearch = { isActiveSearch = it },
-            countries = getCountriesTestData()
+            onFilterFavorites = { filterFavorites = it }
         )
     }
 }

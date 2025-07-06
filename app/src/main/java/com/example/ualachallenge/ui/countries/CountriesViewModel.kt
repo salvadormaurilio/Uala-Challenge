@@ -11,6 +11,7 @@ import com.example.ualachallenge.core.extensions.empty
 import com.example.ualachallenge.domain.GetCountriesUseCase
 import com.example.ualachallenge.domain.UpdateFavoriteUseCase
 import com.example.ualachallenge.domain.model.Country
+import com.example.ualachallenge.domain.model.filterCountries
 import com.example.ualachallenge.domain.model.updateFavorite
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -60,11 +61,17 @@ class CountriesViewModel @Inject constructor(
         getCountries()
     }
 
+    fun filterFavorites(filterFavorites: Boolean) {
+        if (this.filterFavorites == filterFavorites) return
+        this.filterFavorites = filterFavorites
+        getCountries()
+    }
+
     private fun getCountries() {
         jobGetCountries?.cancel()
         jobGetCountries = viewModelScope.launch(coroutinesDispatchers.io) {
             updateCountriesUiState(isLoading = true)
-            getCountriesUseCase(query.trim()).collect {
+            getCountriesUseCase(query = query.trim(), filterFavorites = filterFavorites).collect {
                 getCountriesSuccess(it)
                 getCountriesError(it)
             }
@@ -84,7 +91,7 @@ class CountriesViewModel @Inject constructor(
     fun updateFavorite(id: Int, isFavorite: Boolean) {
         viewModelScope.launch(coroutinesDispatchers.io) {
             updateFavoriteUseCase(id, isFavorite)
-            val newCountries = countriesUiState.value.countries?.updateFavorite(id, isFavorite)
+            val newCountries = countriesUiState.value.countries?.updateFavorite(id, isFavorite)?.filterCountries(query, filterFavorites)
             updateCountriesUiState(countries = newCountries)
 
         }

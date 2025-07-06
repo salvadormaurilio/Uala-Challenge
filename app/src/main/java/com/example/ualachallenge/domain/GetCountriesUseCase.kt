@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface GetCountriesUseCase {
 
-    operator fun invoke(query: String = String.empty()): Flow<Result<List<Country>>>
+    operator fun invoke(query: String = String.empty(), filterFavorites: Boolean = false): Flow<Result<List<Country>>>
 }

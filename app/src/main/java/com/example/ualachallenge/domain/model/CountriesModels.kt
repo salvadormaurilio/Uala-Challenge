@@ -25,8 +25,9 @@ fun Result<List<Country>>.isValidCountries() = isSuccess && !getOrNull().isNullO
 
 fun Result<List<Country>>.getCountries() = getOrNull().orEmpty()
 
-fun Result<List<Country>>.filterCountries(query: String) = map { it.filterCountries(query) }
+fun Result<List<Country>>.filterCountries(query: String, filterFavorites: Boolean) = map { it.filterCountries(query, filterFavorites) }
 
-fun List<Country>.filterCountries(query: String) = filter { it.name.startsWith(query, ignoreCase = true) }
+fun List<Country>.filterCountries(query: String, filterFavorites: Boolean) =
+    filter { it.name.startsWith(query, ignoreCase = true) && (!filterFavorites || it.isFavorite) }
 
 fun List<Country>.updateFavorite(id: Int, isFavorite: Boolean) = map { if (it.id == id) it.copy(isFavorite = isFavorite) else it }

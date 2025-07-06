@@ -7,7 +7,9 @@ import com.example.ualachallenge.data.datasource.exception.DataException
 import com.example.ualachallenge.domain.model.Country
 import com.example.ualachallenge.fakedata.ANY_QUERY
 import com.example.ualachallenge.fakedata.givenCountriesFakeData
+import com.example.ualachallenge.fakedata.givenCountriesFilteredByFavoritesFakeData
 import com.example.ualachallenge.fakedata.givenCountriesFilteredByQueryFakeData
+import com.example.ualachallenge.fakedata.givenCountriesWithFavoritesFakeData
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.test.runTest
@@ -40,15 +42,29 @@ class GetCountriesUseCaseShould {
     }
 
     @Test
-    fun `Get CountriesException data when query has some value is success`() = runTest {
-        val countries = givenCountriesFilteredByQueryFakeData()
+    fun `Get Countries data when query has some value and getCountries is success`() = runTest {
+        val countries = givenCountriesFakeData()
+        val countriesFilteredByQuery = givenCountriesFilteredByQueryFakeData()
         val resultSuccess = Result.success(countries)
         whenever(countriesRepository.getCountries()).thenReturn(flowOf(resultSuccess))
 
-        val result = getCountriesUseCase(ANY_QUERY).lastOrNull()
+        val result = getCountriesUseCase(query = ANY_QUERY).lastOrNull()
 
         verify(countriesRepository).getCountries()
-        assertThatEquals(result?.getOrNull(), countries)
+        assertThatEquals(result?.getOrNull(), countriesFilteredByQuery)
+    }
+
+    @Test
+    fun `Get Countries data when filterFavorites is true and getCountries is success`() = runTest {
+        val countries = givenCountriesWithFavoritesFakeData()
+        val countriesFilteredByQuery = givenCountriesFilteredByFavoritesFakeData()
+        val resultSuccess = Result.success(countries)
+        whenever(countriesRepository.getCountries()).thenReturn(flowOf(resultSuccess))
+
+        val result = getCountriesUseCase(filterFavorites = true).lastOrNull()
+
+        verify(countriesRepository).getCountries()
+        assertThatEquals(result?.getOrNull(), countriesFilteredByQuery)
     }
 
     @Test

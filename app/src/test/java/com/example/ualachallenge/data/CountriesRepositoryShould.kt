@@ -11,7 +11,7 @@ import com.example.ualachallenge.fakedata.ANY_ID
 import com.example.ualachallenge.fakedata.givenCountriesEntityFakeData
 import com.example.ualachallenge.fakedata.givenCountriesFakeData
 import com.example.ualachallenge.fakedata.givenCountriesResponseFakeData
-import com.example.ualachallenge.fakedata.givenUCountriesUpdatedFavoritesFakeData
+import com.example.ualachallenge.fakedata.givenCountriesWithFavoritesFakeData
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.test.runTest
@@ -127,7 +127,7 @@ class CountriesRepositoryShould {
     @Test
     fun `Call updateFavorite and update Countries when updateFavorite is called`() = runTest {
         val countriesEntity = givenCountriesEntityFakeData()
-        val countries = givenUCountriesUpdatedFavoritesFakeData()
+        val countries = givenCountriesWithFavoritesFakeData()
         val resultCountriesEntitySuccess = Result.success(countriesEntity)
         whenever(countriesLocalDataSource.getCountries()).thenReturn(flowOf(resultCountriesEntitySuccess))
 

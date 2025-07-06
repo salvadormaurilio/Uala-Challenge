@@ -97,7 +97,7 @@ fun givenCountriesFilteredByQueryFakeData() = listOf(
     )
 )
 
-fun givenUCountriesUpdatedFavoritesFakeData() = listOf(
+fun givenCountriesWithFavoritesFakeData() = listOf(
     Country(
         id = 1283378,
         name = "Gorkhā",
@@ -122,3 +122,14 @@ fun givenUCountriesUpdatedFavoritesFakeData() = listOf(
     )
 )
 
+
+fun givenCountriesFilteredByFavoritesFakeData() = listOf(
+    Country(
+        id = 519188,
+        name = "Novinki",
+        country = "RU",
+        longitude = 37.666668,
+        latitude = 55.683334,
+        isFavorite = true
+    )
+)

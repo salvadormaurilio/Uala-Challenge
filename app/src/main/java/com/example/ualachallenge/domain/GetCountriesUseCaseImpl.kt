@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class GetCountriesUseCaseImpl @Inject constructor(private val countriesRepository: CountriesRepository) : GetCountriesUseCase {
 
-    override operator fun invoke(query: String) = countriesRepository.getCountries()
-        .map { it.filterCountries(query) }
+    override operator fun invoke(query: String, filterFavorites: Boolean) = countriesRepository.getCountries()
+        .map { it.filterCountries(query, filterFavorites) }
 }
