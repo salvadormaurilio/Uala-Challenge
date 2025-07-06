@@ -69,7 +69,7 @@ fun givenCountriesFakeData() = listOf(
         name = "Gorkhā",
         country = "NP",
         longitude = 84.633331,
-        latitude = 28.0,
+        latitude = 28.0
     ),
     Country(
         id = 707860,
