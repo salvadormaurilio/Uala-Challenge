@@ -28,8 +28,8 @@ import com.example.ualachallenge.ui.theme.CountriesChallengeTheme
 @Composable
 fun CountryItem(
     country: Country,
-    onShorCoordinates: (Country) -> Unit = {},
-    onShowDetails: (Country) -> Unit = {},
+    onShowMap: (Country) -> Unit = {},
+    onShowDetail: (Country) -> Unit = {},
     onFavorite: (Int, Boolean) -> Unit = { _, _ -> }
 ) {
     Card(
@@ -38,7 +38,7 @@ fun CountryItem(
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        onClick = { onShorCoordinates(country) }
+        onClick = { onShowMap(country) }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -69,7 +69,7 @@ fun CountryItem(
                     )
                 }
 
-                IconButton(onClick = { onShowDetails(country) }) {
+                IconButton(onClick = { onShowDetail(country) }) {
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = null

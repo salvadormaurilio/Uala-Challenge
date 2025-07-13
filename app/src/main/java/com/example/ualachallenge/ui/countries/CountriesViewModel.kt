@@ -12,11 +12,16 @@ import com.example.ualachallenge.domain.GetCountriesUseCase
 import com.example.ualachallenge.domain.UpdateFavoriteUseCase
 import com.example.ualachallenge.domain.model.Country
 import com.example.ualachallenge.domain.model.filterCountries
+import com.example.ualachallenge.domain.model.toCountryDetailRoute
+import com.example.ualachallenge.domain.model.toCountryMapRoute
 import com.example.ualachallenge.domain.model.updateFavorite
+import com.example.ualachallenge.ui.home.CountryRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,6 +46,9 @@ class CountriesViewModel @Inject constructor(
     private val _countriesUiState = MutableStateFlow(CountriesUiState())
     val countriesUiState = _countriesUiState.asStateFlow()
 
+    private val _navigateToCountryRoutes = Channel<CountryRoutes>()
+    val navigateToCountryRoutes = _navigateToCountryRoutes.receiveAsFlow()
+
     fun activeSearch(isActiveSearch: Boolean) {
         this.isActiveSearch = isActiveSearch
     }
@@ -56,14 +64,14 @@ class CountriesViewModel @Inject constructor(
         getCountries()
     }
 
-    fun retryGetCountries() {
-        if (countriesUiState.value.isLoading) return
-        getCountries()
-    }
-
     fun filterFavorites(filterFavorites: Boolean) {
         if (this.filterFavorites == filterFavorites) return
         this.filterFavorites = filterFavorites
+        getCountries()
+    }
+
+    fun retryGetCountries() {
+        if (countriesUiState.value.isLoading) return
         getCountries()
     }
 
@@ -108,6 +116,18 @@ class CountriesViewModel @Inject constructor(
                 countries = countries,
                 error = error
             )
+        }
+    }
+
+    fun navigateToCountryMap(country: Country) {
+        viewModelScope.launch {
+            _navigateToCountryRoutes.send(country.toCountryMapRoute())
+        }
+    }
+
+    fun navigateToCountryDetail(country: Country) {
+        viewModelScope.launch {
+            _navigateToCountryRoutes.send(country.toCountryDetailRoute())
         }
     }
 }

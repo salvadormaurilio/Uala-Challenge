@@ -46,17 +46,26 @@ import com.example.ualachallenge.R
 import com.example.ualachallenge.core.extensions.empty
 import com.example.ualachallenge.data.datasource.exception.DataException
 import com.example.ualachallenge.domain.model.Country
+import com.example.ualachallenge.ui.home.CountryRoutes
 import com.example.ualachallenge.ui.theme.CountriesChallengeTheme
 import com.example.ualachallenge.ui.views.CircularProgressIndicatorFixMax
 import com.example.ualachallenge.ui.views.CountriesErrorScreen
 
 @Composable
-fun CountriesScreen(viewModel: CountriesViewModel = hiltViewModel()) {
+fun CountriesScreen(
+    viewModel: CountriesViewModel = hiltViewModel(),
+    navitaToCountryRoute: (CountryRoutes) -> Unit = {}
+) {
 
     val uiState = viewModel.countriesUiState.collectAsStateWithLifecycle()
+    val navigateToCountriesRouteEvents = viewModel.navigateToCountryRoutes
 
     LaunchedEffect(Unit) {
         viewModel.initGetCountries()
+    }
+
+    LaunchedEffect(navigateToCountriesRouteEvents) {
+        navigateToCountriesRouteEvents.collect { navitaToCountryRoute(it) }
     }
 
     CountriesContent(
@@ -70,8 +79,10 @@ fun CountriesScreen(viewModel: CountriesViewModel = hiltViewModel()) {
         onActiveSearch = viewModel::activeSearch,
         onSearch = viewModel::searchCountries,
         onFilterFavorites = viewModel::filterFavorites,
-        onFavorite = viewModel::updateFavorite,
         onRetry = viewModel::retryGetCountries,
+        onFavorite = viewModel::updateFavorite,
+        onShowMap = viewModel::navigateToCountryMap,
+        onShowDetail = viewModel::navigateToCountryDetail
     )
 }
 
@@ -87,10 +98,10 @@ private fun CountriesContent(
     onActiveSearch: (Boolean) -> Unit = {},
     onSearch: (String) -> Unit = {},
     onFilterFavorites: (Boolean) -> Unit = { _ -> },
-    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
-    onShorCoordinates: (Country) -> Unit = {},
-    onShowDetails: (Country) -> Unit = {},
     onRetry: () -> Unit = {},
+    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
+    onShowMap: (Country) -> Unit = {},
+    onShowDetail: (Country) -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -109,8 +120,8 @@ private fun CountriesContent(
                 countries = countries,
                 onFilterFavorites = onFilterFavorites,
                 onFavorite = onFavorite,
-                onShorCoordinates = onShorCoordinates,
-                onShowDetails = onShowDetails
+                onShowMap = onShowMap,
+                onShowDetail = onShowDetail
             )
 
             CountriesErrorScreen(
@@ -221,8 +232,8 @@ private fun Countries(
     countries: List<Country>?,
     onFilterFavorites: (Boolean) -> Unit = { _ -> },
     onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
-    onShorCoordinates: (Country) -> Unit = {},
-    onShowDetails: (Country) -> Unit = {}
+    onShowMap: (Country) -> Unit = {},
+    onShowDetail: (Country) -> Unit = {}
 ) {
     if (countries == null) return
     Column(
@@ -240,8 +251,8 @@ private fun Countries(
             items(items = countries) {
                 CountryItem(
                     country = it,
-                    onShorCoordinates = onShorCoordinates,
-                    onShowDetails = onShowDetails,
+                    onShowMap = onShowMap,
+                    onShowDetail = onShowDetail,
                     onFavorite = onFavorite
                 )
             }

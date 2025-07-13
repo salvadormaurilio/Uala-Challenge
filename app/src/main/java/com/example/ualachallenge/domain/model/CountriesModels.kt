@@ -1,6 +1,7 @@
 package com.example.ualachallenge.domain.model
 
 import com.example.ualachallenge.data.datasource.local.room.CountryEntity
+import com.example.ualachallenge.ui.home.CountryRoutes
 
 data class Country(
     val id: Int,
@@ -31,3 +32,18 @@ fun List<Country>.filterCountries(query: String, filterFavorites: Boolean) =
     filter { it.name.startsWith(query, ignoreCase = true) && (!filterFavorites || it.isFavorite) }
 
 fun List<Country>.updateFavorite(id: Int, isFavorite: Boolean) = map { if (it.id == id) it.copy(isFavorite = isFavorite) else it }
+
+fun Country.toCountryMapRoute() = CountryRoutes.CountryMap(
+    name = name,
+    country = country,
+    longitude = longitude,
+    latitude = latitude,
+)
+
+fun Country.toCountryDetailRoute() = CountryRoutes.CountryDetail(
+    id = id,
+    name = name,
+    country = country,
+    longitude = longitude,
+    latitude = latitude,
+)
