@@ -55,7 +55,7 @@ fun CountryItem(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = stringResource(R.string.coordinates, country.latitude.toString(), country.longitude.toString()),
+                    text = stringResource(R.string.country_location, country.latitude, country.longitude),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
                 )

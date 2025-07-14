@@ -27,8 +27,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"https://gist.githubusercontent.com/hernan-uala/\"")
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
+        buildConfigField("String", "BASE_URL", "\"https://gist.githubusercontent.com/hernan-uala/\"")
     }
 
     buildTypes {

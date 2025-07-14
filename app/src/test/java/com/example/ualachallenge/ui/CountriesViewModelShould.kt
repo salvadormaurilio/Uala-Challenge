@@ -52,7 +52,7 @@ class CountriesViewModelShould {
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
         verify(getCountriesUseCase)()
-        assertThatEquals(result?.countries, countries) A
+        assertThatEquals(result?.countries, countries)
     }
 
     @Test

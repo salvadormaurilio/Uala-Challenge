@@ -1,5 +1,6 @@
 package com.example.ualachallenge.fakedata
 
+import com.example.ualachallenge.BuildConfig
 import com.example.ualachallenge.data.datasource.local.room.CountryEntity
 import com.example.ualachallenge.data.datasource.remote.retrofit.CountryCoordinatesResponse
 import com.example.ualachallenge.data.datasource.remote.retrofit.CountryResponse
@@ -155,5 +156,6 @@ fun givenCountryDetailRouteFakeData() = CountryRoutes.CountryDetail(
     name = "Gorkhā",
     country = "NP",
     longitude = 84.633331,
-    latitude = 28.0
+    latitude = 28.0,
+    image = "https://maps.googleapis.com/maps/api/staticmap?center=28.0,84.633331&zoom=14&size=300x600&key=${BuildConfig.MAPS_API_KEY}"
 )

@@ -1,5 +1,6 @@
 package com.example.ualachallenge.domain.model
 
+import com.example.ualachallenge.BuildConfig
 import com.example.ualachallenge.data.datasource.local.room.CountryEntity
 import com.example.ualachallenge.ui.home.CountryRoutes
 
@@ -46,4 +47,5 @@ fun Country.toCountryDetailRoute() = CountryRoutes.CountryDetail(
     country = country,
     longitude = longitude,
     latitude = latitude,
+    image = "https://maps.googleapis.com/maps/api/staticmap?center=$latitude,$longitude&zoom=14&size=300x600&key=${BuildConfig.MAPS_API_KEY}"
 )

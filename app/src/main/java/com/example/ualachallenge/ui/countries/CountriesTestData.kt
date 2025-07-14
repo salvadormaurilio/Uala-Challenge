@@ -1,5 +1,6 @@
 package com.example.ualachallenge.ui.countries
 
+import com.example.ualachallenge.BuildConfig
 import com.example.ualachallenge.domain.model.Country
 import com.example.ualachallenge.ui.home.CountryRoutes
 
@@ -39,4 +40,13 @@ fun givenCountryMapRouteTestData() = CountryRoutes.CountryMap(
     country = "NP",
     longitude = 84.633331,
     latitude = 28.0
+)
+
+fun givenCountryDetailRouteTestData() = CountryRoutes.CountryDetail(
+    id = 1283378,
+    name = "Gorkhā",
+    country = "NP",
+    longitude = 84.633331,
+    latitude = 28.0,
+    image = "https://maps.googleapis.com/maps/api/staticmap?center=28.0,84.633331&zoom=14&size=300x600&key=${BuildConfig.MAPS_API_KEY}"
 )

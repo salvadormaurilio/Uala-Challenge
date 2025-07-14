@@ -21,5 +21,6 @@ sealed class CountryRoutes {
         val country: String,
         val longitude: Double,
         val latitude: Double,
+        val image: String,
     ) : CountryRoutes()
 }

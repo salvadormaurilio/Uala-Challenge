@@ -4,9 +4,9 @@
     <string name="countries_load_error">We couldn\'t load the countries.\nPlease check your connection and try again.</string>
     <string name="default_error">Please check your connection and try again.</string>
     <string name="retry">Retry</string>
+    <string name="country_id">ID: %d</string>
     <string name="country_name">%1$s, %2$s</string>
-    <string name="coordinates">Lat: %1$s, Long: %2$s</string>
+    <string name="country_location">Lat: %1$s\nLon: %2$s</string>
     <string name="search">"Search"</string>
     <string name="only_favourites">"Only favourites"</string>
-
 </resources>
