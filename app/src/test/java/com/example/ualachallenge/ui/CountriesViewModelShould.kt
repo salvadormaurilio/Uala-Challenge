@@ -14,8 +14,10 @@ import com.example.ualachallenge.fakedata.givenCountryDetailRouteFakeData
 import com.example.ualachallenge.fakedata.givenCountryFakeData
 import com.example.ualachallenge.fakedata.givenCountryMapRouteFakeData
 import com.example.ualachallenge.ui.countries.CountriesViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -24,6 +26,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.whenever
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CountriesViewModelShould {
 
     @get:Rule
@@ -44,11 +47,12 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase()).thenReturn(flowOf(Result.success(countries)))
 
         countriesViewModel.initGetCountries()
+        advanceUntilIdle()
 
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
         verify(getCountriesUseCase)()
-        assertThatEquals(result?.countries, countries)
+        assertThatEquals(result?.countries, countries) A
     }
 
     @Test
@@ -56,6 +60,7 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase()).thenReturn(flowOf(Result.failure(DataException.CountriesException())))
 
         countriesViewModel.initGetCountries()
+        advanceUntilIdle()
 
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
@@ -69,6 +74,7 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase(query = ANY_QUERY)).thenReturn(flowOf(Result.success(countries)))
 
         countriesViewModel.searchCountries(ANY_QUERY)
+        advanceUntilIdle()
 
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
@@ -81,6 +87,7 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase(query = ANY_QUERY)).thenReturn(flowOf(Result.failure(DataException.CountriesException())))
 
         countriesViewModel.searchCountries(ANY_QUERY)
+        advanceUntilIdle()
 
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
@@ -94,6 +101,7 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase(filterFavorites = true)).thenReturn(flowOf(Result.success(countries)))
 
         countriesViewModel.filterFavorites(true)
+        advanceUntilIdle()
 
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
@@ -101,11 +109,14 @@ class CountriesViewModelShould {
         assertThatEquals(result?.countries, countries)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Get CountriesException data when filterFavorites is called and getCountries is failure`() = runTest {
         whenever(getCountriesUseCase(filterFavorites = true)).thenReturn(flowOf(Result.failure(DataException.CountriesException())))
 
         countriesViewModel.filterFavorites(true)
+        advanceUntilIdle()
+
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
         verify(getCountriesUseCase)(filterFavorites = true)
@@ -118,6 +129,7 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase()).thenReturn(flowOf(Result.success(countries)))
 
         countriesViewModel.retryGetCountries()
+        advanceUntilIdle()
 
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
@@ -130,6 +142,8 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase()).thenReturn(flowOf(Result.failure(DataException.CountriesException())))
 
         countriesViewModel.retryGetCountries()
+        advanceUntilIdle()
+
         val result = countriesViewModel.countriesUiState.firstOrNull()
 
         verify(getCountriesUseCase)()
@@ -143,6 +157,7 @@ class CountriesViewModelShould {
         whenever(getCountriesUseCase()).thenReturn(flowOf(Result.success(countries)))
 
         countriesViewModel.initGetCountries()
+        advanceUntilIdle()
         countriesViewModel.updateFavorite(id = ANY_ID, isFavorite = true)
 
         val result = countriesViewModel.countriesUiState.firstOrNull()

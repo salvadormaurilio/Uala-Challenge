@@ -19,6 +19,7 @@ import com.example.ualachallenge.ui.home.CountryRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -78,6 +79,7 @@ class CountriesViewModel @Inject constructor(
     private fun getCountries() {
         jobGetCountries?.cancel()
         jobGetCountries = viewModelScope.launch(coroutinesDispatchers.io) {
+            delay(DELAY_QUERY)
             updateCountriesUiState(isLoading = true)
             getCountriesUseCase(query = query.trim(), filterFavorites = filterFavorites).collect {
                 getCountriesSuccess(it)
@@ -129,5 +131,9 @@ class CountriesViewModel @Inject constructor(
         viewModelScope.launch {
             _navigateToCountryRoutes.send(country.toCountryDetailRoute())
         }
+    }
+
+    companion object {
+        const val DELAY_QUERY = 300L
     }
 }
