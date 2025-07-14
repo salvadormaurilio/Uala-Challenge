@@ -1,9 +1,11 @@
 package com.example.ualachallenge.ui.countries
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +50,9 @@ import com.example.ualachallenge.R
 import com.example.ualachallenge.core.extensions.empty
 import com.example.ualachallenge.data.datasource.exception.DataException
 import com.example.ualachallenge.domain.model.Country
+import com.example.ualachallenge.domain.model.toCountryMapRoute
 import com.example.ualachallenge.ui.home.CountryRoutes
+import com.example.ualachallenge.ui.map.CountryMapContainer
 import com.example.ualachallenge.ui.theme.CountriesChallengeTheme
 import com.example.ualachallenge.ui.views.CircularProgressIndicatorFixMax
 import com.example.ualachallenge.ui.views.CountriesErrorScreen
@@ -56,7 +62,6 @@ fun CountriesScreen(
     viewModel: CountriesViewModel = hiltViewModel(),
     navigationToCountryRoute: (CountryRoutes) -> Unit = {}
 ) {
-
     val uiState = viewModel.countriesUiState.collectAsStateWithLifecycle()
     val navigateToCountriesRouteEvents = viewModel.navigateToCountryRoutes
 
@@ -113,7 +118,7 @@ private fun CountriesContent(
             )
         },
         content = { paddingValues ->
-            Countries(
+            CountriesContainer(
                 modifier = Modifier.padding(paddingValues),
                 filterFavorites = filterFavorites,
                 listState = listState,
@@ -225,7 +230,7 @@ private fun SearchTextField(
 }
 
 @Composable
-private fun Countries(
+private fun CountriesContainer(
     modifier: Modifier = Modifier,
     filterFavorites: Boolean,
     listState: LazyListState,
@@ -236,6 +241,76 @@ private fun Countries(
     onShowDetail: (Country) -> Unit = {}
 ) {
     if (countries == null) return
+
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        CountriesAndMap(
+            modifier = modifier,
+            filterFavorites = filterFavorites,
+            listState = listState,
+            countries = countries,
+            onFilterFavorites = onFilterFavorites,
+            onFavorite = onFavorite,
+            onShowDetail = onShowDetail
+        )
+    } else {
+        Countries(
+            modifier = modifier,
+            filterFavorites = filterFavorites,
+            listState = listState,
+            countries = countries,
+            onFilterFavorites = onFilterFavorites,
+            onFavorite = onFavorite,
+            onShowMap = onShowMap,
+            onShowDetail = onShowDetail
+        )
+    }
+}
+
+@Composable
+private fun CountriesAndMap(
+    modifier: Modifier = Modifier,
+    filterFavorites: Boolean,
+    listState: LazyListState,
+    countries: List<Country>,
+    onFilterFavorites: (Boolean) -> Unit = { _ -> },
+    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
+    onShowDetail: (Country) -> Unit = {},
+) {
+    var countryMap by remember { mutableStateOf<CountryRoutes.CountryMap?>(null) }
+
+    Row(modifier = Modifier.fillMaxSize()) {
+        Countries(
+            modifier = modifier.weight(1f),
+            filterFavorites = filterFavorites,
+            listState = listState,
+            countries = countries,
+            onFilterFavorites = onFilterFavorites,
+            onFavorite = onFavorite,
+            onShowMap = { countryMap = it.toCountryMapRoute() },
+            onShowDetail = onShowDetail
+        )
+        CountryMapContainer(
+            modifier = Modifier.weight(1f),
+            countryMap = countryMap
+        )
+    }
+}
+
+
+@Composable
+private fun Countries(
+    modifier: Modifier = Modifier,
+    filterFavorites: Boolean,
+    listState: LazyListState,
+    countries: List<Country>,
+    onFilterFavorites: (Boolean) -> Unit = { _ -> },
+    onFavorite: (Int, Boolean) -> Unit = { _, _ -> },
+    onShowMap: (Country) -> Unit = {},
+    onShowDetail: (Country) -> Unit = {}
+) {
     Column(
         modifier = modifier,
     ) {
@@ -316,6 +391,26 @@ fun CountriesContentUiStateSuccessPreview() {
         )
     }
 }
+
+@Preview(showBackground = true, uiMode = Configuration.ORIENTATION_LANDSCAPE)
+@Composable
+fun CountriesContentUiStateSuccessPreviewLandscape() {
+    var isActiveSearch by rememberSaveable { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf(String.empty()) }
+    var filterFavorites by rememberSaveable { mutableStateOf(false) }
+    CountriesChallengeTheme {
+        CountriesContent(
+            isActiveSearch = isActiveSearch,
+            query = query,
+            filterFavorites = filterFavorites,
+            countries = getCountriesTestData(),
+            onSearch = { query = it },
+            onActiveSearch = { isActiveSearch = it },
+            onFilterFavorites = { filterFavorites = it }
+        )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
