@@ -1,6 +1,7 @@
 package com.example.ualachallenge.ui.countries
 
 import com.example.ualachallenge.domain.model.Country
+import com.example.ualachallenge.ui.home.CountryRoutes
 
 fun getCountriesTestData() = listOf(
     getCountry1TestData(),
@@ -31,4 +32,11 @@ fun getCountry3TestData() = Country(
     country = "RU",
     longitude = 37.666668,
     latitude = 55.683334
+)
+
+fun givenCountryMapRouteTestData() = CountryRoutes.CountryMap(
+    name = "Gorkhā",
+    country = "NP",
+    longitude = 84.633331,
+    latitude = 28.0
 )

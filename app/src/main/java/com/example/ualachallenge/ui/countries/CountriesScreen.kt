@@ -54,7 +54,7 @@ import com.example.ualachallenge.ui.views.CountriesErrorScreen
 @Composable
 fun CountriesScreen(
     viewModel: CountriesViewModel = hiltViewModel(),
-    navitaToCountryRoute: (CountryRoutes) -> Unit = {}
+    navigationToCountryRoute: (CountryRoutes) -> Unit = {}
 ) {
 
     val uiState = viewModel.countriesUiState.collectAsStateWithLifecycle()
@@ -65,7 +65,7 @@ fun CountriesScreen(
     }
 
     LaunchedEffect(navigateToCountriesRouteEvents) {
-        navigateToCountriesRouteEvents.collect { navitaToCountryRoute(it) }
+        navigateToCountriesRouteEvents.collect { navigationToCountryRoute(it) }
     }
 
     CountriesContent(

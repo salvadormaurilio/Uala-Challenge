@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.ualachallenge.ui.countries.CountriesScreen
+import com.example.ualachallenge.ui.map.CountryMapScreen
 
 @Composable
 fun HomeNavHost(navHostController: NavHostController) {
@@ -22,7 +23,7 @@ fun HomeNavHost(navHostController: NavHostController) {
 
 private fun NavGraphBuilder.countriesNav(navController: NavHostController) {
     composable<CountryRoutes.Countries> {
-        CountriesScreen(navitaToCountryRoute = {
+        CountriesScreen(navigationToCountryRoute = {
             navController.navigate(it)
         })
     }
@@ -31,6 +32,9 @@ private fun NavGraphBuilder.countriesNav(navController: NavHostController) {
 private fun NavGraphBuilder.countryMap(navController: NavHostController) {
     composable<CountryRoutes.CountryMap> { backStackEntry ->
         val countryMap: CountryRoutes.CountryMap = backStackEntry.toRoute()
+        CountryMapScreen(
+            countryMap = countryMap,
+            onBack = { navController.popBackStack() })
     }
 }
 
