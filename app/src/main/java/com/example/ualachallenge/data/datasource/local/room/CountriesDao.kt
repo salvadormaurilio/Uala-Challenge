@@ -19,7 +19,7 @@ interface CountriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(countries: List<CountryEntity>)
 
-    @Query("SELECT * FROM $TABLE_COUNTRY")
+    @Query("SELECT * FROM $TABLE_COUNTRY ORDER BY $NAME COLLATE NOCASE ASC, $COUNTRY COLLATE NOCASE ASC")
     suspend fun getAll(): List<CountryEntity>
 
     @VisibleForTesting

@@ -13,7 +13,6 @@ data class CountryResponse(
     val country: String?,
     @SerializedName("coord")
     val coordinates: CountryCoordinatesResponse?
-
 )
 
 data class CountryCoordinatesResponse(
@@ -25,7 +24,10 @@ data class CountryCoordinatesResponse(
 
 fun Result<List<CountryResponse>>.toCountries() = map { it.sortedByName().toCountries() }
 
-private fun List<CountryResponse>.sortedByName() = sortedBy { it.name }
+private fun List<CountryResponse>.sortedByName() = sortedWith(
+    compareBy<CountryResponse, String>(String.CASE_INSENSITIVE_ORDER) { it.name.orEmpty() }
+        .thenBy(String.CASE_INSENSITIVE_ORDER) { it.country.orEmpty() }
+)
 
 private fun List<CountryResponse>.toCountries() = map { it.toCountry() }
 

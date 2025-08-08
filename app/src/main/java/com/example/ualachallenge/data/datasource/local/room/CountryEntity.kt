@@ -1,10 +1,14 @@
 package com.example.ualachallenge.data.datasource.local.room
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.ualachallenge.domain.model.Country
 
-@Entity(tableName = TABLE_COUNTRY)
+@Entity(
+    tableName = TABLE_COUNTRY,
+    indices = [Index(value = [NAME, COUNTRY])]
+)
 data class CountryEntity(
     @PrimaryKey val id: Int,
     val name: String,

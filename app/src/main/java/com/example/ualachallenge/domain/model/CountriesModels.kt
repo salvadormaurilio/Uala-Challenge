@@ -29,8 +29,54 @@ fun Result<List<Country>>.getCountries() = getOrNull().orEmpty()
 
 fun Result<List<Country>>.filterCountries(query: String, filterFavorites: Boolean) = map { it.filterCountries(query, filterFavorites) }
 
-fun List<Country>.filterCountries(query: String, filterFavorites: Boolean) =
-    filter { it.name.startsWith(query, ignoreCase = true) && (!filterFavorites || it.isFavorite) }
+fun List<Country>.filterCountries(query: String, filterFavorites: Boolean): List<Country> {
+    if (query.isBlank()) return if (filterFavorites) filter { it.isFavorite } else this
+
+    val lowerQuery = query.lowercase()
+
+    val start = lowerBound(lowerQuery)
+    val end = upperBound(lowerQuery)
+
+    if (start >= end) return emptyList()
+
+    return subList(start, end).filterFavoritesIf(filterFavorites)
+}
+
+private fun List<Country>.lowerBound(prefix: String): Int {
+    var low = 0
+    var high = this.size
+    while (low < high) {
+        val mid = (low + high) / 2
+        val name = this[mid].name.lowercase()
+        if (name < prefix) {
+            low = mid + 1
+        } else {
+            high = mid
+        }
+    }
+    return low
+}
+
+private fun List<Country>.upperBound(prefix: String): Int {
+    var low = 0
+    var high = this.size
+    while (low < high) {
+        val mid = (low + high) / 2
+        val name = this[mid].name.lowercase()
+        if (name.startsWith(prefix)) {
+            low = mid + 1
+        } else if (name < prefix) {
+            low = mid + 1
+        } else {
+            high = mid
+        }
+    }
+    return low
+}
+
+private fun List<Country>.filterFavoritesIf(shouldFilter: Boolean): List<Country> {
+    return if (shouldFilter) filter { it.isFavorite } else this
+}
 
 fun List<Country>.updateFavorite(id: Int, isFavorite: Boolean) = map { if (it.id == id) it.copy(isFavorite = isFavorite) else it }
 
