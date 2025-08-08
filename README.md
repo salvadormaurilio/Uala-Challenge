@@ -39,6 +39,24 @@ The app includes the following features:
 
 ---
 
+## 🚀 Search Optimization Criteria[](url)
+
+The following strategies were implemented to optimize the city search:
+
+1. **Initial load optimization**:  
+   On the first app launch, the list of cities is sorted alphabetically and stored locally using Room. This avoids fetching and processing the JSON every time the app starts.
+
+2. **In-memory caching**:  
+   Once cities are loaded from the local database, they are kept in memory in the `CountriesRepositoryImpl` class. This reduces database access on each search and improves performance.
+
+3. **Binary search for filtering**:  
+   When a user enters a query, a binary search is used to find the first and last matching indices. A sublist is then created based on these indices, significantly reducing the search complexity even with thousands of cities.
+
+4. **Favorites filtering**:  
+   If the user enables the favorites filter, the resulting sublist is further filtered.  
+   All this logic is encapsulated in the extension function:  `List<Country>.filterCountries(query: String, filterFavorites: Boolean): List<Country>`
+
+
 ## 🧪 UI Tests
 
 
